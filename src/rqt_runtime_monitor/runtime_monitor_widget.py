@@ -32,6 +32,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 import copy
+
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -207,7 +208,7 @@ class RuntimeMonitorWidget(QWidget):
                 self._warning_node.removeChild(item.tree_node)
             elif (item.status.level == -1) or (item.status.level == DiagnosticStatus.STALE):
                 self._stale_node.removeChild(item.tree_node)
-            else: # ERROR
+            else:  # ERROR
                 self._error_node.removeChild(item.tree_node)
 
             if (status.level == DiagnosticStatus.OK):
@@ -216,7 +217,7 @@ class RuntimeMonitorWidget(QWidget):
                 parent_node = self._warning_node
             elif (status.level == -1) or (status.level == DiagnosticStatus.STALE):
                 parent_node = self._stale_node
-            else: # ERROR
+            else:  # ERROR
                 parent_node = self._error_node
 
             item.tree_node.setText(0, status.name + ": " + status.message)
@@ -250,7 +251,7 @@ class RuntimeMonitorWidget(QWidget):
             parent_node = self._warning_node
         elif (status.level == -1) or (status.level == DiagnosticStatus.STALE):
             parent_node = self._stale_node
-        else: # ERROR
+        else:  # ERROR
             parent_node = self._error_node
 
         item = TreeItem(status, QTreeWidgetItem(parent_node, [status.name + ": " + status.message]))
@@ -279,6 +280,7 @@ class RuntimeMonitorWidget(QWidget):
 
         scroll_value = self.html_browser.verticalScrollBar().value()
         status = item.status
+        row_style = "font-family: monospace; font-size: 8pt; white-space: pre-wrap;"
 
         s = StringIO()
 
@@ -287,10 +289,10 @@ class RuntimeMonitorWidget(QWidget):
         s.write("<b>Message</b>: %s<br>\n" % (status.message))
         s.write("<b>Hardware ID</b>: %s<br><br>\n\n" % (status.hardware_id))
 
-        s.write('<table border="1" cellpadding="2" cellspacing="0">')
+        s.write('<table border="1" cellpadding="1" cellspacing="0">')
         for value in status.values:
             value.value = value.value.replace("\n", "<br>")
-            s.write("<tr><td><b>%s</b></td> <td>%s</td></tr>\n" % (value.key, value.value))
+            s.write(f"<tr><td style='{row_style}'><b>%s</b></td> <td style='{row_style}'>%s</td></tr>\n" % (value.key, value.value))
 
         s.write("</table></body></html>")
 
